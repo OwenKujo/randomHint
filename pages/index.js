@@ -1,66 +1,63 @@
+import { useState } from 'react';
 import Head from 'next/head';
-import styles from '../styles/Home.module.css';
+import namesData from './name.json';
 
 export default function Home() {
+  const [availableNames, setAvailableNames] = useState([...namesData.names]);
+  const [usedNames, setUsedNames] = useState([]);
+  const [randomName, setRandomName] = useState('');
+
+  const getRandomName = () => {
+    if (availableNames.length === 0) {
+      // Reset used names if all names have been used
+      setAvailableNames([...namesData.names]);
+      setUsedNames([]);
+    }
+
+    const randomIndex = Math.floor(Math.random() * availableNames.length);
+    const newName = availableNames[randomIndex];
+
+    // Update state to reflect the used name and remove it from available names
+    setUsedNames([...usedNames, newName]);
+    setAvailableNames(availableNames.filter(name => name !== newName));
+
+    setRandomName(newName);
+  };
+
   return (
-    <div className={styles.container}>
+    <div className="container">
       <Head>
-        <title>Create Next App</title>
+        <title>คำใบ้จากพี่ปีสอง ที่จริงใจ</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <main>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
+        <h1 className="title">คำใบ้จากพี่ปีสอง ที่จริงใจ</h1>
 
-        <p className={styles.description}>
-          Get started by editing <code>pages/index.js</code>
+        <p className="description">
+          กดเลยจ้า รับคำใบ้ฟินฟิน จากพี่เทค:
         </p>
 
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+        <div className="generator">
+          <button onClick={getRandomName}>เอาหลาว เอาหลาว</button>
+          {randomName && <p className="random-name">{randomName}</p>}
         </div>
       </main>
 
       <footer>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel" className={styles.logo} />
-        </a>
+        <p>Names sourced from <a href="https://example.com">example.com</a></p>
       </footer>
 
       <style jsx>{`
+        .container {
+          min-height: 100vh;
+          padding: 0 0.5rem;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+        }
+
         main {
           padding: 5rem 0;
           flex: 1;
@@ -69,38 +66,68 @@ export default function Home() {
           justify-content: center;
           align-items: center;
         }
+
+        .title {
+          margin: 0;
+          line-height: 1.15;
+          font-size: 4rem;
+        }
+
+        .description {
+          line-height: 1.5;
+          font-size: 1.5rem;
+          text-align: center;
+        }
+
+        .generator {
+          margin-top: 2rem;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+
+        button {
+          font-size: 1.5rem;
+          cursor: pointer;
+          padding: 1rem 2rem;
+          border: none;
+          background-color: #0070f3;
+          color: white;
+          border-radius: 5px;
+          transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+          background-color: #0053b3;
+        }
+
+        .random-name {
+          margin-top: 1rem;
+          font-size: 6rem;
+        }
+
         footer {
           width: 100%;
-          height: 100px;
+          height: 80px;
           border-top: 1px solid #eaeaea;
           display: flex;
           justify-content: center;
           align-items: center;
         }
-        footer img {
-          margin-left: 0.5rem;
+
+        footer p {
+          margin: 0;
+          font-size: 0.9rem;
+          color: #888;
         }
+
         footer a {
-          display: flex;
-          justify-content: center;
-          align-items: center;
+          color: #0070f3;
           text-decoration: none;
-          color: inherit;
         }
-        code {
-          background: #fafafa;
-          border-radius: 5px;
-          padding: 0.75rem;
-          font-size: 1.1rem;
-          font-family:
-            Menlo,
-            Monaco,
-            Lucida Console,
-            Liberation Mono,
-            DejaVu Sans Mono,
-            Bitstream Vera Sans Mono,
-            Courier New,
-            monospace;
+
+        footer a:hover {
+          text-decoration: underline;
         }
       `}</style>
 
@@ -109,19 +136,10 @@ export default function Home() {
         body {
           padding: 0;
           margin: 0;
-          font-family:
-            -apple-system,
-            BlinkMacSystemFont,
-            Segoe UI,
-            Roboto,
-            Oxygen,
-            Ubuntu,
-            Cantarell,
-            Fira Sans,
-            Droid Sans,
-            Helvetica Neue,
-            sans-serif;
+          font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+            Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
         }
+
         * {
           box-sizing: border-box;
         }
